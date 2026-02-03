@@ -27,9 +27,9 @@ def read_description() -> str:
 
 
 setup(
-    name='TODO',
+    name='dnx',
     packages=[
-        'TODO', ],
+        'dnx', ],
     version='0.1',
     description='TODO',
     long_description=read_description(),
@@ -40,7 +40,7 @@ setup(
     download_url='https://github.com/openscilab/TODO/tarball/v0.1',
     keywords="TODO TODO TODO",
     project_urls={
-            'Source': 'https://github.com/openscilab/TODO',
+            'Source': 'https://github.com/openscilab/dnx',
     },
     install_requires=get_requires(),
     python_requires='>=3.7',
@@ -62,4 +62,8 @@ setup(
         'Topic :: TODO',
     ],
     license='MIT',
+    entry_points={
+        'console_scripts': [
+            'dnx = dnx.cli:main',
+        ]}
 )
