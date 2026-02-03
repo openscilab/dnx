@@ -1,4 +1,4 @@
 # -*- coding: utf-8 -*-
 """TODO modules."""
 
-from .params import TODO_VERSION
+from .params import DNX_VERSION
