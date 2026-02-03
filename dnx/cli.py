@@ -57,7 +57,3 @@ def main():
         backend.reset_dns()
         print("DNS reset")
 
-
-if __name__ == "__main__":
-    main()
-
