@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """dnx CLI."""
 import argparse
-from .dns import get_backend, require_admin, validate_ips,
+from .dns import get_backend, require_admin, validate_ips
 from .params import DNS_PRESETS
 
 

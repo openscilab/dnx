@@ -65,5 +65,5 @@ setup(
     entry_points={
         'console_scripts': [
             'dnx = dnx.cli:main',
-        ]})
+        ]}
 )
