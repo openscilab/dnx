@@ -4,22 +4,22 @@ import os
 import sys
 import codecs
 Failed = 0
-TODO_VERSION = "0.1"
+DNX_VERSION = "0.1"
 
 
 SETUP_ITEMS = [
     "version='{0}'",
-    'https://github.com/openscilab/TODO/tarball/v{0}']
+    'https://github.com/openscilab/dnx/tarball/v{0}']
 README_ITEMS = [
-    "[Version {0}](https://github.com/openscilab/TODO/archive/v{0}.zip)",
-    "pip install TODO=={0}"]
+    "[Version {0}](https://github.com/openscilab/dnx/archive/v{0}.zip)",
+    "pip install dnx=={0}"]
 CHANGELOG_ITEMS = [
     "## [{0}]",
-    "https://github.com/openscilab/TODO/compare/v{0}...dev",
+    "https://github.com/openscilab/dnx/compare/v{0}...dev",
     "[{0}]:"]
-PARAMS_ITEMS = ['TODO_VERSION = "{0}"']
+PARAMS_ITEMS = ['DNX_VERSION = "{0}"']
 META_ITEMS = ['% set version = "{0}" %']
-ISSUE_TEMPLATE_ITEMS = ["- TODO {0}"]
+ISSUE_TEMPLATE_ITEMS = ["- dnx {0}"]
 SECURITY_ITEMS = ["| {0}           | :white_check_mark: |", "| < {0}         | :x:                |"]
 
 FILES = {
@@ -28,18 +28,20 @@ FILES = {
     "README.md": README_ITEMS,
     "CHANGELOG.md": CHANGELOG_ITEMS,
     "SECURITY.md": SECURITY_ITEMS,
-    os.path.join("TODO", "params.py"): PARAMS_ITEMS,
+    os.path.join("dnx", "params.py"): PARAMS_ITEMS,
     os.path.join(".github", "ISSUE_TEMPLATE", "bug_report.yml"): ISSUE_TEMPLATE_ITEMS,
 }
 
 TEST_NUMBER = len(FILES)
 
 
-def print_result(failed: bool = False) -> None:
+def print_result(failed=False):
     """
     Print final result.
 
     :param failed: failed flag
+    :type failed: bool
+    :return: None
     """
     message = "Version tag tests "
     if not failed:
@@ -55,7 +57,7 @@ if __name__ == "__main__":
             file_content = codecs.open(
                 file_name, "r", "utf-8", 'ignore').read()
             for test_item in FILES[file_name]:
-                if file_content.find(test_item.format(TODO_VERSION)) == -1:
+                if file_content.find(test_item.format(DNX_VERSION)) == -1:
                     print("Incorrect version tag in " + file_name)
                     Failed += 1
                     break
