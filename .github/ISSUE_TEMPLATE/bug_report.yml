@@ -80,12 +80,12 @@ body:
     validations:
       required: true
   - type: dropdown
-    id: TODO-version
+    id: dnx-version
     attributes:
-      label: TODO version
-      description: Which version of TODO are you using?
+      label: dnx version
+      description: Which version of dnx are you using?
       options:
-        - TODO 0.1
+        - dnx 0.1
       default: 0
     validations:
       required: true
