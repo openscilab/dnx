@@ -9,6 +9,6 @@
 
 ## Reporting a vulnerability
 
-Please report security vulnerabilities by email to [TODO@openscilab.com](mailto:TODO@openscilab.com "TODO@openscilab.com").
+Please report security vulnerabilities by email to [dnx@openscilab.com](mailto:dnx@openscilab.com).
 
 If the security vulnerability is accepted, a dedicated bugfix release will be issued as soon as possible (depending on the complexity of the fix).
