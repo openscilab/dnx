@@ -9,7 +9,7 @@ resetting to defaults, and pinging DNS servers for latency testing.
 import sys
 import argparse
 from .dns import get_backend, require_admin, validate_ips
-from .params import DNS_PRESETS
+from .params import DNX_VERSION, DNS_PRESETS
 from .exceptions import DNXError
 from .ping import ping_servers, verify_servers, format_ping_results, format_ping_result
 
@@ -31,6 +31,12 @@ def main():
     parser = argparse.ArgumentParser(
         prog="dnx",
         description="dnx - Minimal cross-platform DNS changer",
+    )
+    parser.add_argument(
+        "-v",
+        "--version",
+        action="version",
+        version=f"%(prog)s {DNX_VERSION}",
     )
 
     parser.add_argument(
