@@ -1,7 +1,5 @@
 <div align="center">
-    <img src="https://github.com/openscilab/dnx/raw/main/otherfiles/logo.png" width="350">
     <h1>DNX: Minimal cross-platform DNS changer</h1>
-    <br/>
     <a href="https://codecov.io/gh/openscilab/dnx"><img src="https://codecov.io/gh/openscilab/dnx/branch/main/graph/badge.svg" alt="Codecov"/></a>
     <a href="https://badge.fury.io/py/dnx"><img src="https://badge.fury.io/py/dnx.svg" alt="PyPI version"></a>
     <a href="https://www.python.org/"><img src="https://img.shields.io/badge/built%20with-Python3-green.svg" alt="built with Python3"></a>
