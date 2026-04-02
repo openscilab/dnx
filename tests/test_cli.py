@@ -6,7 +6,19 @@ import sys
 from io import StringIO
 from unittest.mock import patch, MagicMock
 from dnx.cli import main
-from dnx.params import DNS_PRESETS
+from dnx.params import DNS_PRESETS, DNX_VERSION
+
+
+class TestCLIVersion:
+    """Tests for global --version."""
+
+    def test_version_flag(self):
+        with patch.object(sys, "argv", ["dnx", "--version"]):
+            with patch("sys.stdout", new_callable=StringIO) as mock_stdout:
+                with pytest.raises(SystemExit) as exc:
+                    main()
+        assert exc.value.code == 0
+        assert mock_stdout.getvalue().strip() == f"dnx {DNX_VERSION}"
 
 
 class TestCLIList:
