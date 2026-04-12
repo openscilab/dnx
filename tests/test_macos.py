@@ -71,10 +71,15 @@ class TestMacOSDNS:
     def test_get_dns_no_servers(self):
         mock_output = "There aren't any DNS Servers set on Wi-Fi.\n"
 
-        with patch("dnx.dns.run_command") as mock_run:
-            mock_run.return_value = MagicMock(stdout=mock_output)
+        def side_effect(args, **kwargs):
+            if args[:2] == ["scutil", "--dns"]:
+                return MagicMock(stdout="")
+            return MagicMock(stdout=mock_output)
+
+        with patch("dnx.dns.run_command", side_effect=side_effect):
             backend = MacOSDNS()
             backend._service = "Wi-Fi"
+            backend.iface = "en0"
             servers = backend.get_dns()
 
         assert servers == []
