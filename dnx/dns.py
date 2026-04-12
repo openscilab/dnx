@@ -9,6 +9,7 @@ classes and platform-specific implementations for Linux, macOS, and Windows.
 import ipaddress
 import os
 import platform
+import re
 import subprocess
 from enum import Enum
 from typing import List, Optional
@@ -521,6 +522,108 @@ def _is_networkmanager_active() -> bool:
         return False
 
 
+def _macos_scutil_main_section(stdout: str) -> str:
+    """Use global DNS config only; scoped section duplicates the same resolvers."""
+    marker = "DNS configuration (for scoped queries)"
+    if marker in stdout:
+        return stdout.split(marker, 1)[0].strip()
+    return stdout.strip()
+
+
+def _macos_scutil_resolver_blocks(section: str) -> List[str]:
+    """Split ``scutil --dns`` main section into one string per ``resolver #N`` block."""
+    section = section.strip()
+    if not section:
+        return []
+    return re.findall(
+        r"(?ms)^\s*resolver #\d+.*?(?=^\s*resolver #\d+|\Z)",
+        section,
+    )
+
+
+def _macos_scutil_block_is_reachable(block: str) -> bool:
+    """True unless this resolver block explicitly says it is not reachable."""
+    for line in block.splitlines():
+        if "reach" not in line.lower():
+            continue
+        if re.search(r"\(Not Reachable\)", line, flags=re.IGNORECASE):
+            return False
+    return True
+
+
+def _macos_scutil_block_matches_iface(block: str, iface: str) -> bool:
+    """True if ``if_index`` line ties this resolver to ``iface`` (e.g. ``en0``)."""
+    return bool(
+        re.search(r"if_index\s*:\s*\d+\s*\(%s\)" % re.escape(iface), block)
+    )
+
+
+def _macos_scutil_nameservers_in_block(block: str) -> List[str]:
+    ips: List[str] = []
+    for match in re.finditer(r"nameserver\[\d+\]\s*:\s*(\S+)", block):
+        raw = match.group(1).strip().rstrip(",")
+        try:
+            ipaddress.ip_address(raw)
+        except ValueError:
+            continue
+        ips.append(raw)
+    return ips
+
+
+def _ipv4_before_ipv6(ips: List[str]) -> List[str]:
+    """Stable: IPv4 first, then IPv6 (typical LAN display order)."""
+    v4 = [x for x in ips if ipaddress.ip_address(x).version == 4]
+    v6 = [x for x in ips if ipaddress.ip_address(x).version == 6]
+    return v4 + v6
+
+
+def _macos_scutil_dns_nameservers(iface: Optional[str] = None) -> List[str]:
+    """
+    Parse nameserver IPs from ``scutil --dns`` for the active / default path.
+
+    Ignores the scoped-queries duplicate section, skips ``Not Reachable``
+    resolver blocks (e.g. mDNS-only ``.local``), and prefers the block whose
+    ``if_index`` matches ``iface`` when given.
+
+    Used when ``networksetup -getdnsservers`` reports no manual servers (DHCP).
+
+    Args:
+        iface: Hardware interface (e.g. ``en0``). Optional.
+
+    Returns:
+        Unique nameserver addresses (IPv4 before IPv6), or [] if unavailable.
+    """
+    try:
+        result = run_command(["scutil", "--dns"], check=False)
+    except CommandFailedError:
+        return []
+    if not result.stdout:
+        return []
+
+    main = _macos_scutil_main_section(result.stdout)
+    blocks = _macos_scutil_resolver_blocks(main)
+    usable = [b for b in blocks if _macos_scutil_block_is_reachable(b)]
+
+    chosen: List[str] = []
+    if iface:
+        matched = [b for b in usable if _macos_scutil_block_matches_iface(b, iface)]
+        if matched:
+            chosen = matched
+    if not chosen:
+        chosen = usable
+
+    seen: List[str] = []
+    found = set()
+    for block in chosen:
+        ordered = _ipv4_before_ipv6(_macos_scutil_nameservers_in_block(block))
+        for raw in ordered:
+            if raw not in found:
+                found.add(raw)
+                seen.append(raw)
+
+    return seen
+
+
 def get_linux_backend(iface: Optional[str] = None) -> DNSBackend:
     """
     Get the appropriate Linux DNS backend based on system configuration.
@@ -634,6 +737,15 @@ class MacOSDNS(DNSBackend):
 
         raise ServiceNotFoundError(f"Cannot map interface '{iface}' to network service")
 
+    def _hardware_iface_for_scutil(self) -> Optional[str]:
+        """Interface name (e.g. ``en0``) for matching ``scutil --dns`` ``if_index``."""
+        if self.iface:
+            return self.iface
+        try:
+            return self.get_active_interface()
+        except InterfaceNotFoundError:
+            return None
+
     def _get_service(self) -> str:
         """
         Get the network service name, caching the result.
@@ -650,6 +762,10 @@ class MacOSDNS(DNSBackend):
         """
         Get DNS servers using networksetup.
 
+        When the service uses DHCP/automatic DNS, ``-getdnsservers`` reports no
+        manual entries even though resolution works; in that case we fall back
+        to ``scutil --dns`` to list effective resolver addresses.
+
         Returns:
             List of DNS server IP addresses.
         """
@@ -659,7 +775,7 @@ class MacOSDNS(DNSBackend):
         out = result.stdout.strip()
 
         if "There aren't any DNS Servers" in out:
-            return []
+            return _macos_scutil_dns_nameservers(self._hardware_iface_for_scutil())
 
         servers = []
         for line in out.splitlines():
@@ -670,6 +786,10 @@ class MacOSDNS(DNSBackend):
                     servers.append(line)
                 except ValueError:
                     pass
+        if not servers:
+            fallback = _macos_scutil_dns_nameservers(self._hardware_iface_for_scutil())
+            if fallback:
+                return fallback
         return servers
 
     def set_dns(self, servers: List[str]) -> None:
