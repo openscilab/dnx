@@ -6,15 +6,16 @@ This module provides the main CLI entry point for the dnx DNS changer tool.
 It supports listing presets, showing current DNS, setting DNS servers,
 resetting to defaults, and pinging DNS servers for latency testing.
 """
-import sys
 import argparse
-from .dns import get_backend, require_admin, validate_ips
+import sys
+
+from .dns import DNSBackend, get_backend, require_admin, validate_ips
 from .params import DNX_VERSION, DNS_PRESETS
 from .exceptions import DNXError
-from .ping import ping_servers, verify_servers, format_ping_results, format_ping_result
+from .ping import ping_servers, verify_servers, format_ping_summary, format_ping_result
 
 
-def main():
+def main() -> None:
     """
     Execute the dnx command-line interface.
 
@@ -122,7 +123,7 @@ def main():
         sys.exit(130)
 
 
-def _handle_list(args):
+def _handle_list(args: argparse.Namespace) -> None:
     """
     Handle the 'list' command.
 
@@ -142,7 +143,7 @@ def _handle_list(args):
             print(f"{name}: {', '.join(servers)}")
 
 
-def _handle_ping(args):
+def _handle_ping(args: argparse.Namespace) -> None:
     """
     Handle the 'ping' command.
 
@@ -157,10 +158,10 @@ def _handle_ping(args):
     validate_ips(servers)
     print(f"Pinging {len(servers)} server(s)...\n")
     results = ping_servers(servers, count=args.count)
-    print(format_ping_results(results))
+    print(format_ping_summary(results))
 
 
-def _handle_current(backend, args):
+def _handle_current(backend: DNSBackend, args: argparse.Namespace) -> None:
     """
     Handle the 'current' command.
 
@@ -183,7 +184,7 @@ def _handle_current(backend, args):
                 print(f"  {format_ping_result(r)}")
 
 
-def _handle_set(backend, args):
+def _handle_set(backend: DNSBackend, args: argparse.Namespace) -> None:
     """
     Handle the 'set' command.
 
@@ -205,7 +206,7 @@ def _handle_set(backend, args):
     if args.verify:
         print(f"\nVerifying {len(servers)} server(s)...")
         all_ok, results = verify_servers(servers)
-        print(format_ping_results(results))
+        print(format_ping_summary(results))
 
         if not all_ok:
             unreachable = [r.ip for r in results if not r.reachable]
@@ -238,7 +239,7 @@ def _handle_set(backend, args):
             print(f"    {format_ping_result(r)}")
 
 
-def _handle_reset(backend):
+def _handle_reset(backend: DNSBackend) -> None:
     """
     Handle the 'reset' command.
 
