@@ -42,7 +42,7 @@ from .exceptions import (
 )
 
 
-def require_admin():
+def require_admin() -> None:
     """
     Check if running with admin/root privileges.
 
@@ -63,7 +63,7 @@ def require_admin():
             raise AdminRequiredError("Please run as Administrator")
 
 
-def validate_ips(servers: List[str]):
+def validate_ips(servers: List[str]) -> None:
     """
     Validate that all servers are valid IP addresses.
 
@@ -211,14 +211,6 @@ class DNSBackend:
             NotImplementedError: If not implemented by subclass.
         """
         raise NotImplementedError
-
-    def __repr__(self) -> str:
-        """Return string representation for debugging."""
-        return f"{self.__class__.__name__}(iface={self.iface!r})"
-
-    def __str__(self) -> str:
-        """Return human-readable string representation."""
-        return f"{self.__class__.__name__} on {self.get_interface()}"
 
 
 class ResolvConfDNS(DNSBackend):
@@ -542,7 +534,7 @@ def _macos_scutil_resolver_blocks(section: str) -> List[str]:
 
 
 def _macos_scutil_block_is_reachable(block: str) -> bool:
-    """True unless this resolver block explicitly says it is not reachable."""
+    """Return True unless this resolver block explicitly says it is not reachable."""
     for line in block.splitlines():
         if "reach" not in line.lower():
             continue
@@ -552,13 +544,14 @@ def _macos_scutil_block_is_reachable(block: str) -> bool:
 
 
 def _macos_scutil_block_matches_iface(block: str, iface: str) -> bool:
-    """True if ``if_index`` line ties this resolver to ``iface`` (e.g. ``en0``)."""
+    """Return True if ``if_index`` line ties this resolver to ``iface`` (e.g. ``en0``)."""
     return bool(
         re.search(r"if_index\s*:\s*\d+\s*\(%s\)" % re.escape(iface), block)
     )
 
 
 def _macos_scutil_nameservers_in_block(block: str) -> List[str]:
+    """Extract nameserver IP addresses from a single resolver block."""
     ips: List[str] = []
     for match in re.finditer(r"nameserver\[\d+\]\s*:\s*(\S+)", block):
         raw = match.group(1).strip().rstrip(",")
@@ -571,7 +564,7 @@ def _macos_scutil_nameservers_in_block(block: str) -> List[str]:
 
 
 def _ipv4_before_ipv6(ips: List[str]) -> List[str]:
-    """Stable: IPv4 first, then IPv6 (typical LAN display order)."""
+    """Sort addresses with IPv4 before IPv6, preserving order within each group."""
     v4 = [x for x in ips if ipaddress.ip_address(x).version == 4]
     v6 = [x for x in ips if ipaddress.ip_address(x).version == 6]
     return v4 + v6
@@ -738,7 +731,7 @@ class MacOSDNS(DNSBackend):
         raise ServiceNotFoundError(f"Cannot map interface '{iface}' to network service")
 
     def _hardware_iface_for_scutil(self) -> Optional[str]:
-        """Interface name (e.g. ``en0``) for matching ``scutil --dns`` ``if_index``."""
+        """Return the interface name (e.g. ``en0``) for matching ``scutil --dns`` ``if_index``."""
         if self.iface:
             return self.iface
         try:
