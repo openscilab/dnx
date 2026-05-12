@@ -72,7 +72,7 @@
 
 ## Usage
 
-### Library
+### In Python
 
 #### Backend and current DNS
 
@@ -238,4 +238,4 @@ Give a ⭐️ if this project helped you!
 ### Donate to our project
 If you do like our project and we hope that you do, can you please support us? Our project is not and is never going to be working for profit. We need the money just so we can continue doing what we do ;-) .			
 
-<a href="https://openscilab.com/#donation" target="_blank"><img src="https://github.com/openscilab/dnx/raw/main/otherfiles/donation.png" height="90px" width="270px" alt="ONX Donation"></a>
+<a href="https://openscilab.com/#donation" target="_blank"><img src="https://github.com/openscilab/dnx/raw/main/otherfiles/donation.png" height="90px" width="270px" alt="DNX Donation"></a>
