@@ -284,7 +284,7 @@ def format_ping_result(result: PingResult) -> str:
     return f"{result.ip}: {latency_str} avg ({loss_str} loss)"
 
 
-def format_ping_results(results: List[PingResult]) -> str:
+def format_ping_summary(results: List[PingResult]) -> str:
     """
     Format multiple ping results for display.
 

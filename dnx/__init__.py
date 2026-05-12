@@ -45,7 +45,7 @@ from .ping import (
     ping_servers,
     verify_servers,
     format_ping_result,
-    format_ping_results,
+    format_ping_summary,
 )
 
 __version__ = DNX_VERSION
@@ -79,5 +79,5 @@ __all__ = [
     "ping_servers",
     "verify_servers",
     "format_ping_result",
-    "format_ping_results",
+    "format_ping_summary",
 ]
