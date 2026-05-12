@@ -14,17 +14,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `SystemdResolvedDNS`, `NetworkManagerDNS`, and `ResolvConfDNS` classes
 - `MacOSDNS` and `WindowsDNS` classes
 - `ping` module
-- `cli.py` module
-- `--iface` argument
-- `--latency` argument
-- `--verify` argument
-- `--no-latency` argument
-- `--count` argument
-- `--version` argument
+- `cli` module
 - `test.yml` workflow
 - `version_check.py` script
-- `README.md`
-- Tests
+- Test workflow
 
 [Unreleased]: https://github.com/openscilab/dnx/compare/v0.1...dev
-[0.1]: https://github.com/openscilab/dnx/compare/3216fb7...v0.1
+[0.1]: https://github.com/openscilab/dnx/compare/a9fcdab...v0.1
