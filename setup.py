@@ -7,13 +7,9 @@ except ImportError:
 
 
 def get_requires() -> list:
-    """Read requirements.txt, skipping blanks and comment lines."""
-    with open("requirements.txt", "r", encoding="utf-8") as fh:
-        return [
-            line.strip()
-            for line in fh
-            if line.strip() and not line.strip().startswith("#")
-        ]
+    """Read requirements.txt."""
+    requirements = open("requirements.txt", "r").read()
+    return list(filter(lambda x: x != "", requirements.split()))
 
 
 def read_description() -> str:
@@ -49,7 +45,7 @@ setup(
     install_requires=get_requires(),
     python_requires='>=3.7',
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 3 - Pre-Alpha',
         'Environment :: Console',
         'Intended Audience :: Developers',
         'Intended Audience :: System Administrators',
