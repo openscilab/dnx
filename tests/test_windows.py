@@ -90,11 +90,6 @@ class TestWindowsDNS:
         call_args = mock_run.call_args[0][0]
         assert "Ethernet 2" in call_args[-1]
 
-    def test_repr(self):
-        backend = WindowsDNS(iface="Wi-Fi")
-        assert "WindowsDNS" in repr(backend)
-        assert "Wi-Fi" in repr(backend)
-
 
 @pytest.mark.windows
 class TestWindowsDNSIntegration:

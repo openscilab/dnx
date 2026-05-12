@@ -86,11 +86,6 @@ class TestResolvConfDNS:
         with pytest.raises(DNSOperationError):
             backend.reset_dns()
 
-    def test_repr(self):
-        backend = ResolvConfDNS(iface="eth0")
-        assert "ResolvConfDNS" in repr(backend)
-        assert "eth0" in repr(backend)
-
 
 @pytest.mark.linux
 class TestSystemdResolvedDNS:

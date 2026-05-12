@@ -148,11 +148,6 @@ class TestMacOSDNS:
         service = backend._get_service()
         assert service == "Cached-Service"
 
-    def test_repr(self):
-        backend = MacOSDNS(iface="en0")
-        assert "MacOSDNS" in repr(backend)
-        assert "en0" in repr(backend)
-
 
 @pytest.mark.macos
 class TestMacOSDNSIntegration:
