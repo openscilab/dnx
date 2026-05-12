@@ -8,7 +8,7 @@ from dnx.ping import (
     ping_servers,
     verify_servers,
     format_ping_result,
-    format_ping_results,
+    format_ping_summary,
     _parse_ping_output_unix,
     _parse_ping_output_windows,
 )
@@ -167,12 +167,12 @@ class TestFormatPingResults:
             PingResult(ip="8.8.8.8", reachable=True, avg_ms=10.0, loss_percent=0.0),
             PingResult(ip="1.1.1.1", reachable=True, avg_ms=15.0, loss_percent=0.0),
         ]
-        output = format_ping_results(results)
+        output = format_ping_summary(results)
         assert "8.8.8.8" in output
         assert "1.1.1.1" in output
         lines = output.strip().split("\n")
         assert len(lines) == 2
 
     def test_format_empty_list(self):
-        output = format_ping_results([])
+        output = format_ping_summary([])
         assert output == ""
