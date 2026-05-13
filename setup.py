@@ -23,7 +23,7 @@ def read_description() -> str:
             description += c.read()
         return description
     except Exception:
-        return '''TODO'''
+        return '''Minimal cross-platform DNS changer'''
 
 
 setup(
@@ -31,14 +31,14 @@ setup(
     packages=[
         'dnx', ],
     version='0.1',
-    description='TODO',
+    description='Minimal cross-platform DNS changer',
     long_description=read_description(),
     long_description_content_type='text/markdown',
-    author='TODO Development Team',
-    author_email='TODO@openscilab.com',
-    url='https://github.com/openscilab/TODO',
-    download_url='https://github.com/openscilab/TODO/tarball/v0.1',
-    keywords="TODO TODO TODO",
+    author='OpenSciLab Development Team',
+    author_email='dnx@openscilab.com',
+    url='https://github.com/openscilab/dnx',
+    download_url='https://github.com/openscilab/dnx/tarball/v0.1',
+    keywords="dns network cli cross-platform",
     project_urls={
             'Source': 'https://github.com/openscilab/dnx',
     },
@@ -46,9 +46,14 @@ setup(
     python_requires='>=3.7',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
-        'Natural Language :: English',
+        'Environment :: Console',
+        'Intended Audience :: Developers',
+        'Intended Audience :: System Administrators',
         'License :: OSI Approved :: MIT License',
-        'Operating System :: OS Independent',
+        'Natural Language :: English',
+        'Operating System :: MacOS',
+        'Operating System :: Microsoft :: Windows',
+        'Operating System :: POSIX :: Linux',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
@@ -56,10 +61,9 @@ setup(
         'Programming Language :: Python :: 3.11',
         'Programming Language :: Python :: 3.12',
         'Programming Language :: Python :: 3.13',
-        'Intended Audience :: TODO',
-        'Intended Audience :: TODO',
-        'Topic :: TODO',
-        'Topic :: TODO',
+        'Topic :: Internet :: Name Service (DNS)',
+        'Topic :: System :: Networking',
+        'Topic :: Utilities',
     ],
     license='MIT',
     entry_points={

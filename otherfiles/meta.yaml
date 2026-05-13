@@ -1,11 +1,11 @@
-{% set name = "TODO" %}
+{% set name = "dnx" %}
 {% set version = "0.1" %}
 
 package:
     name: {{ name|lower }}
     version: {{ version }}
 source:
-    git_url: https://github.com/openscilab/TODO
+    git_url: https://github.com/openscilab/dnx
     git_rev: v{{ version }}
 build:
     noarch: python
@@ -19,12 +19,13 @@ requirements:
     run:
         - python >=3.7
 about:
-    home: https://github.com/openscilab/TODO
+    home: https://github.com/openscilab/dnx
     license: MIT
     license_family: MIT
-    summary: TODO
+    summary: Minimal cross-platform DNS changer
     description: |
-	    TODO
+        dnx is a minimal cross-platform DNS changer CLI tool that supports
+        Linux (systemd-resolved, NetworkManager, resolv.conf), Windows, and macOS.
 extra:
     recipe-maintainers:
-        - TODO
+        - AHReccese

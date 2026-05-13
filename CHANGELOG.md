@@ -6,16 +6,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added
-- `TIKTOKEN_R50K.LINEAR_ALL` model
-- `TIKTOKEN_R50K.LINEAR_ENGLISH` model
 ### Changed
-- `README.md` updated
-## [0.1] - 2025-08-30
+## [0.1] - Unreleased
 ### Added
-- `RULE_BASED.UNIVERSAL` model
-- `RULE_BASED.GPT_4` model
-- `RULE_BASED.GPT_3_5` model
+- `Platform` enum
+- `get_platform` function
+- `exceptions` module
+- `DNSBackend` class
+- `get_backend` and `get_linux_backend` functions
+- `SystemdResolvedDNS`, `NetworkManagerDNS`, and `ResolvConfDNS` classes
+- `MacOSDNS` and `WindowsDNS` classes
+- `ping` module
+- `cli` module
+- `test.yml` workflow
+- `version_check.py` script
+- Test workflow
 
-
-[Unreleased]: https://github.com/openscilab/TODO/compare/v0.1...dev
-[0.1]: https://github.com/openscilab/TODO/compare/8385d46...v0.1
+[Unreleased]: https://github.com/openscilab/dnx/compare/v0.1...dev
+[0.1]: https://github.com/openscilab/dnx/compare/a9fcdab...v0.1
