@@ -4,4 +4,4 @@ bandit>=1.5.1
 pydocstyle>=3.0.0
 pytest>=6.2.5,<8.0.0; python_version<'3.8'
 pytest>=7.0.0; python_version>='3.8'
-pytest-cov>=2.6.1
+pytest-cov>=7.1.0
