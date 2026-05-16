@@ -4,7 +4,7 @@
 import pytest
 from unittest.mock import patch, MagicMock
 
-from dnx.dns import WindowsDNS
+from dnx.dns import WindowsDNS, DNSBackend, get_backend
 from dnx.exceptions import InterfaceNotFoundError
 
 
@@ -89,6 +89,22 @@ class TestWindowsDNS:
 
         call_args = mock_run.call_args[0][0]
         assert "Ethernet 2" in call_args[-1]
+
+
+@pytest.mark.windows
+class TestWindowsGetBackend:
+    """Tests for get_backend() on Windows."""
+
+    def test_get_backend_returns_windows_dns(self):
+        """Verify get_backend() returns a WindowsDNS instance on Windows."""
+        backend = get_backend()
+        assert isinstance(backend, WindowsDNS)
+        assert isinstance(backend, DNSBackend)
+
+    def test_get_backend_passes_iface(self):
+        """Verify get_backend() forwards the iface argument."""
+        backend = get_backend(iface="Wi-Fi")
+        assert backend.iface == "Wi-Fi"
 
 
 @pytest.mark.windows
