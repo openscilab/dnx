@@ -6,9 +6,11 @@ import pytest
 from unittest.mock import patch, MagicMock
 
 from dnx.dns import (
+    DNSBackend,
     ResolvConfDNS,
     SystemdResolvedDNS,
     NetworkManagerDNS,
+    get_backend,
     get_linux_backend,
     _is_systemd_resolved_active,
     _is_networkmanager_active,
@@ -110,6 +112,23 @@ class TestSystemdResolvedDNS:
         assert "8.8.8.8" in servers
         assert "8.8.4.4" in servers
 
+    def test_get_dns_real(self):
+        """Read DNS via resolvectl on a system where systemd-resolved is active."""
+        if not _is_systemd_resolved_active():
+            pytest.skip("systemd-resolved not active")
+        backend = SystemdResolvedDNS()
+        servers = backend.get_dns()
+        assert isinstance(servers, list)
+
+    def test_get_dns_command_failure_returns_empty(self):
+        """Verify CommandFailedError from resolvectl returns empty list."""
+        from dnx.exceptions import CommandFailedError
+
+        with patch("dnx.dns.run_command", side_effect=CommandFailedError("fail")):
+            backend = SystemdResolvedDNS(iface="eth0")
+            servers = backend.get_dns()
+        assert servers == []
+
 
 @pytest.mark.linux
 class TestNetworkManagerDNS:
@@ -132,6 +151,26 @@ class TestNetworkManagerDNS:
             servers = backend.get_dns()
 
         assert servers == ["8.8.8.8", "8.8.4.4"]
+
+    def test_get_dns_real(self):
+        """Read DNS via nmcli on a system where NetworkManager is active."""
+        if not _is_networkmanager_active():
+            pytest.skip("NetworkManager not active")
+        backend = NetworkManagerDNS()
+        servers = backend.get_dns()
+        assert isinstance(servers, list)
+
+    def test_get_connection_name_real(self):
+        """Read connection name via nmcli when NetworkManager is active."""
+        if not _is_networkmanager_active():
+            pytest.skip("NetworkManager not active")
+        backend = NetworkManagerDNS()
+        try:
+            conn_name = backend._get_connection_name()
+            assert isinstance(conn_name, str)
+            assert len(conn_name) > 0
+        except InterfaceNotFoundError:
+            pytest.skip("No active NM connection found")
 
 
 @pytest.mark.linux
@@ -164,6 +203,24 @@ class TestLinuxBackendFactory:
             with patch("dnx.dns._is_networkmanager_active", return_value=False):
                 backend = get_linux_backend(iface="eth1")
                 assert backend.iface == "eth1"
+
+
+@pytest.mark.linux
+class TestLinuxGetBackend:
+    """Tests for get_backend() on Linux."""
+
+    def test_get_backend_returns_dns_backend(self):
+        """Verify get_backend() returns a DNSBackend subclass on Linux."""
+        backend = get_backend()
+        assert isinstance(backend, DNSBackend)
+        assert isinstance(
+            backend, (ResolvConfDNS, SystemdResolvedDNS, NetworkManagerDNS)
+        )
+
+    def test_get_backend_passes_iface(self):
+        """Verify get_backend() forwards the iface argument."""
+        backend = get_backend(iface="eth0")
+        assert backend.iface == "eth0"
 
 
 @pytest.mark.linux
