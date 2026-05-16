@@ -34,6 +34,11 @@ def pytest_collection_modifyitems(config, items):
         elif "macos" in item.keywords and current != "macos":
             item.add_marker(pytest.mark.skip(reason="Test requires macOS"))
 
+        if "requires_admin" in item.keywords:
+            item.add_marker(
+                pytest.mark.skip(reason="Test requires admin/root privileges")
+            )
+
 
 @pytest.fixture
 def sample_resolv_conf(tmp_path):
