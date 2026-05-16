@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 """Tests for ping functionality."""
 
+import subprocess
+
 import pytest
+from unittest.mock import patch
+
 from dnx.ping import (
     PingResult,
     ping_server,
@@ -127,6 +131,45 @@ class TestVerifyServers:
     def test_verify_unreachable(self):
         all_ok, results = verify_servers(["10.255.255.1"], count=1)
         assert all_ok is False
+
+
+class TestPingServerEdgeCases:
+    """Tests for ping_server error branches."""
+
+    def test_timeout_returns_unreachable(self):
+        """Verify TimeoutExpired results in unreachable PingResult."""
+        with patch(
+            "dnx.ping.subprocess.run",
+            side_effect=subprocess.TimeoutExpired(cmd="ping", timeout=5),
+        ):
+            result = ping_server("8.8.8.8", count=1, timeout=1)
+
+        assert result.reachable is False
+        assert result.error == "Timeout"
+        assert result.packets_sent == 1
+        assert result.loss_percent == 100.0
+
+    def test_ping_not_found_returns_error(self):
+        """Verify FileNotFoundError results in error PingResult."""
+        with patch(
+            "dnx.ping.subprocess.run",
+            side_effect=FileNotFoundError("ping not found"),
+        ):
+            result = ping_server("8.8.8.8", count=1)
+
+        assert result.reachable is False
+        assert "not found" in result.error.lower()
+
+    def test_generic_exception_returns_error(self):
+        """Verify unexpected exception is caught gracefully."""
+        with patch(
+            "dnx.ping.subprocess.run",
+            side_effect=OSError("unexpected"),
+        ):
+            result = ping_server("8.8.8.8", count=1)
+
+        assert result.reachable is False
+        assert "unexpected" in result.error
 
 
 class TestFormatPingResult:
