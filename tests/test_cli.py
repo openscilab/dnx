@@ -6,7 +6,9 @@ import sys
 from io import StringIO
 from unittest.mock import patch, MagicMock
 from dnx.cli import main
+from dnx.exceptions import DNXError
 from dnx.params import DNS_PRESETS, DNX_VERSION
+from dnx.ping import PingResult
 
 
 class TestCLIVersion:
@@ -176,6 +178,81 @@ class TestCLIInterface:
                     main()
 
         mock_get_backend.assert_called_once_with("eth0")
+
+
+class TestCLIListLatency:
+    """Tests for 'dnx list --latency' command."""
+
+    def test_list_latency_shows_results(self):
+        """Verify --latency pings every preset and prints results."""
+        fake_result = PingResult(
+            ip="8.8.8.8", reachable=True, avg_ms=10.0, loss_percent=0.0
+        )
+        with patch.object(sys, "argv", ["dnx", "list", "--latency"]):
+            with patch("dnx.cli.ping_servers", return_value=[fake_result]):
+                with patch("sys.stdout", new_callable=StringIO) as mock_stdout:
+                    main()
+                    output = mock_stdout.getvalue()
+
+        assert "Checking latency" in output
+        for name in DNS_PRESETS:
+            assert name in output
+
+
+class TestCLICurrentLatency:
+    """Tests for 'dnx current --latency' command."""
+
+    def test_current_latency_shows_results(self):
+        """Verify --latency pings current servers and prints latency."""
+        mock_backend = MagicMock()
+        mock_backend.get_dns.return_value = ["8.8.8.8"]
+        fake_result = PingResult(
+            ip="8.8.8.8", reachable=True, avg_ms=12.0, loss_percent=0.0
+        )
+
+        with patch.object(sys, "argv", ["dnx", "current", "--latency"]):
+            with patch("dnx.cli.get_backend", return_value=mock_backend):
+                with patch("dnx.cli.ping_servers", return_value=[fake_result]):
+                    with patch("sys.stdout", new_callable=StringIO) as mock_stdout:
+                        main()
+                        output = mock_stdout.getvalue()
+
+        assert "Latency" in output
+        assert "8.8.8.8" in output
+
+
+class TestCLIKeyboardInterrupt:
+    """Tests for CLI KeyboardInterrupt handling."""
+
+    def test_keyboard_interrupt_exits_130(self):
+        """Verify KeyboardInterrupt during execution exits with code 130."""
+        with patch.object(sys, "argv", ["dnx", "current"]):
+            with patch("dnx.cli.get_backend", side_effect=KeyboardInterrupt):
+                with patch("sys.stdout", new_callable=StringIO):
+                    with pytest.raises(SystemExit) as exc_info:
+                        main()
+                    assert exc_info.value.code == 130
+
+    def test_dnx_error_exits_1(self):
+        """Verify DNXError during execution exits with code 1."""
+        with patch.object(sys, "argv", ["dnx", "current"]):
+            with patch("dnx.cli.get_backend", side_effect=DNXError("boom")):
+                with pytest.raises(SystemExit) as exc_info:
+                    main()
+                assert exc_info.value.code == 1
+
+
+class TestCLICurrentEndToEnd:
+    """End-to-end tests for 'dnx current' (no admin required)."""
+
+    def test_current_end_to_end(self):
+        """Run 'dnx current' with real backend -- reads DNS without admin."""
+        with patch.object(sys, "argv", ["dnx", "current"]):
+            with patch("sys.stdout", new_callable=StringIO) as mock_stdout:
+                main()
+                output = mock_stdout.getvalue()
+
+        assert "Current DNS servers" in output or "No DNS servers" in output
 
 
 class TestCLIErrorHandling:
