@@ -4,7 +4,7 @@
 import pytest
 from unittest.mock import patch, MagicMock
 
-from dnx.dns import MacOSDNS
+from dnx.dns import MacOSDNS, DNSBackend, get_backend
 from dnx.exceptions import InterfaceNotFoundError, ServiceNotFoundError
 
 
@@ -147,6 +147,22 @@ class TestMacOSDNS:
 
         service = backend._get_service()
         assert service == "Cached-Service"
+
+
+@pytest.mark.macos
+class TestMacOSGetBackend:
+    """Tests for get_backend() on macOS."""
+
+    def test_get_backend_returns_macos_dns(self):
+        """Verify get_backend() returns a MacOSDNS instance on macOS."""
+        backend = get_backend()
+        assert isinstance(backend, MacOSDNS)
+        assert isinstance(backend, DNSBackend)
+
+    def test_get_backend_passes_iface(self):
+        """Verify get_backend() forwards the iface argument."""
+        backend = get_backend(iface="en0")
+        assert backend.iface == "en0"
 
 
 @pytest.mark.macos
