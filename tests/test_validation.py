@@ -8,13 +8,13 @@ import pytest
 from unittest.mock import patch, MagicMock
 
 from dnx.dns import (
+    Platform,
     validate_ips,
     get_platform,
     run_command,
     require_admin,
     DNSBackend,
     ResolvConfDNS,
-    Platform,
 )
 from dnx.exceptions import (
     InvalidIPError,
@@ -140,20 +140,20 @@ class TestRequireAdmin:
 
     def test_non_admin_raises_on_unix(self):
         """Test that non-root on Unix raises AdminRequiredError."""
-        with patch("dnx.dns.os.name", "posix"):
+        with patch("dnx.dns.get_platform", return_value=Platform.LINUX):
             with patch("dnx.dns.os.geteuid", create=True, return_value=1000):
                 with pytest.raises(AdminRequiredError):
                     require_admin()
 
     def test_admin_passes_on_unix(self):
         """Test that root on Unix passes without error."""
-        with patch("dnx.dns.os.name", "posix"):
+        with patch("dnx.dns.get_platform", return_value=Platform.LINUX):
             with patch("dnx.dns.os.geteuid", create=True, return_value=0):
                 require_admin()
 
     def test_non_admin_raises_on_windows(self):
         """Test that non-admin on Windows raises AdminRequiredError."""
-        with patch("dnx.dns.os.name", "nt"):
+        with patch("dnx.dns.get_platform", return_value=Platform.WINDOWS):
             with patch(
                 "dnx.dns.subprocess.check_call",
                 side_effect=subprocess.CalledProcessError(1, "net"),
@@ -163,7 +163,7 @@ class TestRequireAdmin:
 
     def test_admin_passes_on_windows(self):
         """Test that admin on Windows passes without error."""
-        with patch("dnx.dns.os.name", "nt"):
+        with patch("dnx.dns.get_platform", return_value=Platform.WINDOWS):
             with patch("dnx.dns.subprocess.check_call"):
                 require_admin()
 
