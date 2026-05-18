@@ -43,10 +43,11 @@ jobs:
         run: |
           python -m pytest tests/ --cov=dnx --cov-report=term
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
-          fail_ci_if_error: true
           token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
+          slug: openscilab/dnx
         if: matrix.python-version == env.TEST_PYTHON_VERSION && matrix.os == env.TEST_OS
       - name: Vulture, Bandit and Pydocstyle tests
         run: |
