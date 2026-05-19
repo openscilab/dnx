@@ -13,6 +13,7 @@ from typing import List, Optional
 
 from .dns import Platform, get_platform
 from .exceptions import CommandFailedError
+from .params import DEFAULT_PING_COUNT, DEFAULT_PING_TIMEOUT
 
 
 @dataclass
@@ -167,7 +168,7 @@ def _parse_ping_output_windows(output: str) -> dict:
     return result
 
 
-def ping_server(ip: str, count: int = 3, timeout: int = 5) -> PingResult:
+def ping_server(ip: str, count: int = DEFAULT_PING_COUNT, timeout: int = DEFAULT_PING_TIMEOUT) -> PingResult:
     """
     Ping a DNS server and return latency statistics.
 
@@ -232,7 +233,7 @@ def ping_server(ip: str, count: int = 3, timeout: int = 5) -> PingResult:
         )
 
 
-def ping_servers(servers: List[str], count: int = 3) -> List[PingResult]:
+def ping_servers(servers: List[str], count: int = DEFAULT_PING_COUNT) -> List[PingResult]:
     """
     Ping multiple DNS servers.
 

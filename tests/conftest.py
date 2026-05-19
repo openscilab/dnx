@@ -1,8 +1,27 @@
 # -*- coding: utf-8 -*-
 """Pytest configuration and fixtures."""
 
-import platform
+import os
+import subprocess
+
 import pytest
+
+from dnx.dns import Platform, get_platform
+
+
+def _has_admin() -> bool:
+    """Return True if the current process has admin/root privileges."""
+    if get_platform() == Platform.WINDOWS:
+        try:
+            subprocess.check_call(
+                ["net", "session"],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+            return True
+        except (subprocess.CalledProcessError, FileNotFoundError):
+            return False
+    return os.geteuid() == 0
 
 
 def pytest_configure(config):
@@ -16,23 +35,22 @@ def pytest_configure(config):
 
 
 def pytest_collection_modifyitems(config, items):
-    """Skip tests based on platform markers."""
-    current_platform = platform.system().lower()
-
-    platform_map = {
-        "linux": "linux",
-        "darwin": "macos",
-        "windows": "windows",
-    }
-    current = platform_map.get(current_platform)
+    """Skip tests based on platform and privilege markers."""
+    current = get_platform()
+    admin = _has_admin()
 
     for item in items:
-        if "linux" in item.keywords and current != "linux":
+        if "linux" in item.keywords and current != Platform.LINUX:
             item.add_marker(pytest.mark.skip(reason="Test requires Linux"))
-        elif "windows" in item.keywords and current != "windows":
+        elif "windows" in item.keywords and current != Platform.WINDOWS:
             item.add_marker(pytest.mark.skip(reason="Test requires Windows"))
-        elif "macos" in item.keywords and current != "macos":
+        elif "macos" in item.keywords and current != Platform.MACOS:
             item.add_marker(pytest.mark.skip(reason="Test requires macOS"))
+
+        if "requires_admin" in item.keywords and not admin:
+            item.add_marker(
+                pytest.mark.skip(reason="Test requires admin/root privileges")
+            )
 
 
 @pytest.fixture

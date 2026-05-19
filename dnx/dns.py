@@ -49,7 +49,7 @@ def require_admin() -> None:
     Raises:
         AdminRequiredError: If not running with sufficient privileges.
     """
-    if os.name != "nt":
+    if get_platform() != Platform.WINDOWS:
         if os.geteuid() != 0:
             raise AdminRequiredError("Please run as root (sudo)")
     else:
