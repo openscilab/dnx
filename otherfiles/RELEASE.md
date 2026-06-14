@@ -1,6 +1,6 @@
-# TODO Release Instructions
+# DNX Release Instructions
 
-**Last Update: 2025-04-17**
+**Last Update: 2026-06-14**
 
 1. Create the `release` branch under `dev`
 2. Update all version tags
@@ -8,13 +8,13 @@
 	2. `README.md`
 	3. `otherfiles/version_check.py`
 	4. `otherfiles/meta.yaml`
-	5. `TODO/params.py`
+	5. `dnx/params.py`
 3. Update `CHANGELOG.md`
 	1. Add a new header under `Unreleased` section (Example: `## [0.1] - 2022-08-17`)
-	2. Add a new compare link to the end of the file (Example: `[0.2]: https://github.com/openscilab/TODO/compare/v0.1...v0.2`)
-	3. Update `dev` compare link (Example: `[Unreleased]: https://github.com/openscilab/TODO/compare/v0.2...dev`)
+	2. Add a new compare link to the end of the file (Example: `[0.2]: https://github.com/openscilab/dnx/compare/v0.1...v0.2`)
+	3. Update `dev` compare link (Example: `[Unreleased]: https://github.com/openscilab/dnx/compare/v0.2...dev`)
 4. Update `.github/ISSUE_TEMPLATE/bug_report.yml`
-   1. Add new version tag to `TODO version` dropbox options
+   1. Add new version tag to `DNX version` dropbox options
 5. Create a PR from `release` to `dev`
 	1. Title: `Version x.x` (Example: `Version 0.1`)
 	2. Tag all related issues
