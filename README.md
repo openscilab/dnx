@@ -1,10 +1,10 @@
 <div align="center">
     <h1>DNX: Minimal cross-platform DNS changer</h1>
-    <a href="https://codecov.io/gh/openscilab/dnx"><img src="https://codecov.io/gh/openscilab/dnx/branch/main/graph/badge.svg" alt="Codecov"/></a>
+    <a href="https://codecov.io/gh/openscilab/dnx"><img src="https://codecov.io/gh/openscilab/dnx/graph/badge.svg?token=JFJ67FKQED" alt="Codecov"/></a>
     <a href="https://badge.fury.io/py/dnx"><img src="https://badge.fury.io/py/dnx.svg" alt="PyPI version"></a>
     <a href="https://www.python.org/"><img src="https://img.shields.io/badge/built%20with-Python3-green.svg" alt="built with Python3"></a>
     <a href="https://github.com/openscilab/dnx"><img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/openscilab/dnx"></a>
-    <a href="https://discord.gg/TODO"><img src="https://img.shields.io/discord/1064533716615049236.svg" alt="Discord Channel"></a>
+    <a href="https://discord.gg/K23nyjtNaU"><img src="https://img.shields.io/discord/1064533716615049236.svg" alt="Discord Channel"></a>
 </div>
 
 
@@ -53,7 +53,7 @@
 <table>
 	<tr> 
 		<td align="center">Code Quality</td>
-		<td align="center"><a href="https://app.codacy.com/gh/openscilab/dnx/dashboard?utm_source=gh"><img src="https://app.codacy.com/project/badge/Grade/cb2ab6584eb443b8a33da4d4252480bc"/></a></td>
+		<td align="center"><a href="https://app.codacy.com/gh/openscilab/dnx/dashboard?utm_source=gh"><img src="https://app.codacy.com/project/badge/Grade/1286c5c49b064116befb8af6aa7e80a8"/></a></td>
 		<td align="center"><a href="https://www.codefactor.io/repository/github/openscilab/dnx"><img src="https://www.codefactor.io/repository/github/openscilab/dnx/badge" alt="CodeFactor"></a></td>
 	</tr>
 </table>
@@ -225,7 +225,7 @@ Just fill an issue and describe it. We'll check it ASAP! You can also email [dnx
 
 You can also join our discord server
 
-<a href="https://discord.gg/TODO">
+<a href="https://discord.gg/K23nyjtNaU">
   <img src="https://img.shields.io/discord/1064533716615049236.svg?style=for-the-badge" alt="Discord Channel">
 </a>
 
