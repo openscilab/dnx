@@ -1,16 +1,6 @@
 # -*- coding: utf-8 -*-
 """Setup module."""
-try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup
-
-
-def get_requires() -> list:
-    """Read requirements.txt."""
-    requirements = open("requirements.txt", "r").read()
-    return list(filter(lambda x: x != "", requirements.split()))
-
+from setuptools import setup
 
 def read_description() -> str:
     """Read README.md and CHANGELOG.md."""
@@ -28,8 +18,7 @@ def read_description() -> str:
 
 setup(
     name='dnx',
-    packages=[
-        'dnx', ],
+    packages=['dnx', ],
     version='0.1',
     description='Minimal cross-platform DNS changer',
     long_description=read_description(),
@@ -38,11 +27,11 @@ setup(
     author_email='dnx@openscilab.com',
     url='https://github.com/openscilab/dnx',
     download_url='https://github.com/openscilab/dnx/tarball/v0.1',
-    keywords="dns network cli cross-platform",
+    keywords='dns network cli cross-platform',
     project_urls={
-            'Source': 'https://github.com/openscilab/dnx',
+        'Source': 'https://github.com/openscilab/dnx',
     },
-    install_requires=get_requires(),
+    install_requires=[],
     python_requires='>=3.7',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
