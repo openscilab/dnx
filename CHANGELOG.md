@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Added
 ### Changed
+- Dependencies structure modified
 ## [0.1] - 2026-06-22
 ### Added
 - `Platform` enum
