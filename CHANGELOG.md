@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 ### Changed
 - Dependencies structure modified
+- `Python 3.14` added to `test.yml`
+- `Python 3.15` added to `test.yml`
 ## [0.1] - 2026-06-22
 ### Added
 - `Platform` enum
